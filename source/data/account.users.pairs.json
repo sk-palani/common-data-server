@@ -1,0 +1,7 @@
+{
+  "child": "accounts",
+  "parent": "users",
+  "name": "owner",
+  "padding": 5,
+  "max": 20
+}
