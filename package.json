@@ -4,18 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node source/server.js",
+    "live": "while true; do sleep 2; df -h; done"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@grpc/grpc-js": "^1.3.6",
     "@grpc/proto-loader": "^0.6.4",
     "chalk": "^4.1.1",
     "csv-parser": "^3.0.0",
     "fifo": "^2.4.1",
     "fs": "^0.0.1-security",
-    "grpc": "^1.24.10",
     "node-cache": "^5.1.2",
     "path": "^0.12.7",
     "short-id": "^0.0.0",
