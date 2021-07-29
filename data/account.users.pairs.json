@@ -1,7 +1,0 @@
-{
-  "child": "trn:profiles:accounts",
-  "parent": "trn:profiles:users",
-  "name": "owner",
-  "padding": 5,
-  "max": 50
-}
