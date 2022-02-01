@@ -8,6 +8,7 @@ const TransactionMix = require('../types/TransactionMix');
 const RandomList     = require('../types/RandomList');
 const SequenceList   = require('../types/SequenceList');
 const Pairs          = require('../types/Pairs');
+const Seed           = require('../types/Seed');
 const Stores         = require('../types/Stores');
 
 const uid = new ShortUniqueId();
@@ -53,7 +54,6 @@ const log = {
                             }
                         )
                 });
-                console.log(entries.length + ' Items')
                 dataStores[file.replace('.json', '')] = new TransactionMix(entries);
             }
             if (file.endsWith('.csv')) {
@@ -80,7 +80,6 @@ const log = {
                         )
                     })
                     .on('end', () => {
-                        console.log(entries.length + ' Items')
                         if (file.endsWith('.random.csv')) {
                             dataStores[file.replace('.csv', '')] = new RandomList(entries);
                         } else {
@@ -91,19 +90,21 @@ const log = {
             if (file.endsWith('.pairs.json')) {
                 log.info('Loading... ' + file);
                 const uidWithTimestamp = uid.stamp(32);
-                console.log(uidWithTimestamp);
 
                 let pairFile = JSON.parse(Fs.readFileSync(path.join(folder + file), 'utf8'));
-                console.log(pairFile);
 
                 dataStores[file.replace('.json', '')] = new Pairs(uidWithTimestamp, pairFile);
             }
+            if (file.endsWith('.seed.json')) {
+                log.info('Loading... ' + file);
+                const uidWithTimestamp                = uid.stamp(32);
+                let seedFile                          = JSON.parse(Fs.readFileSync(path.join(folder + file), 'utf8'));
+                dataStores[file.replace('.json', '')] = new Seed(uidWithTimestamp, seedFile);
+            }
             if (file.endsWith('.store.json')) {
                 log.info('Loading... ' + file);
-                const uidWithTimestamp = uid.stamp(32);
-                console.log(uidWithTimestamp);
-                let storesFile = JSON.parse(Fs.readFileSync(path.join(folder + file), 'utf8'));
-                console.log(storesFile);
+                const uidWithTimestamp                = uid.stamp(32);
+                let storesFile                        = JSON.parse(Fs.readFileSync(path.join(folder + file), 'utf8'));
                 dataStores[file.replace('.json', '')] = new Stores(uidWithTimestamp, storesFile);
             }
         });
