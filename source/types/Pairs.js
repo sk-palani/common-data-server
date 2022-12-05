@@ -39,30 +39,44 @@ class Pairs {
             this.childcounter = 1;
             this.parentcounter++;
         }
-        const childSuffix = String(this.childcounter).padStart(this.config.padding, '0'); // '0009'
+        const childSuffix  = String(this.childcounter).padStart(this.config.padding, '0'); // '0009'
         const parentSuffix = String(this.parentcounter).padStart(this.config.padding, '0'); // '0009'
 
-        let response = {
-            id: shortid.generate(),
+        let generated_id = shortid.generate();
+        return {
+            id  : generated_id,
             name: this.id,
             data: {
-                value: `${this.config.parent}:${this.id}_${parentSuffix}`,
-                field1: `${this.config.parent}:${this.id}_${parentSuffix}`,
-                field2: `${this.config.name}`,
-                field3: `${this.config.child}:${this.id}_${childSuffix}`
+                itemID: `${this.id}_${parentSuffix}`,
+                value : `${this.config.parent}:${this.id}_${parentSuffix}`,
+                field1: `${this.config.name}`,
+                field2: `${this.id}_${parentSuffix}_${childSuffix}`,
+                field3: `${this.config.child}:${this.id}_${parentSuffix}_${childSuffix}`
             },
-        };
-        return response
+        }
 
+    }
+
+    setId(id) {
+        this.id = id;
     }
 
     get(size) {
         const chuckSize = size ? size : 1;
-        const results = [];
+        const results   = [];
         for (let i = 0; i < chuckSize; i++) {
             results.push(this._get());
         }
         return results;
+    }
+
+
+    stats() {
+        const result = {
+            parentcounter: parentcounter,
+            childcounter : childcounter
+        };
+        return `${JSON.stringify(result)}`;
     }
 }
 

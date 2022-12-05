@@ -32,6 +32,14 @@ class TransactionMix {
         }
         return results;
     }
+
+    stats() {
+        const result = {
+            usedList  : this.usedList.length,
+            unusedList: this.unusedList.length
+        };
+        return `${JSON.stringify(result)}`;
+    }
 }
 
 module.exports = TransactionMix;

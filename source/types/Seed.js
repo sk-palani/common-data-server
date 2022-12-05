@@ -35,21 +35,25 @@ class Seed {
 
     _get() {
         this.childcounter++;
-        const childSuffix = String(this.childcounter).padStart(this.config.padding, '0'); // '0009'
-        const unique_id   = shortid.generate();
+        const childSuffix  = String(this.childcounter).padStart(this.config.padding, '0'); // '0009'
+        const generated_id = shortid.generate();
 
-        let response = {
-            id  : unique_id,
+        return {
+            id  : generated_id,
             name: this.id,
             data: {
-                value : `${this.config.prefix}:${unique_id}_${childSuffix}`,
-                field1: `${unique_id}_${childSuffix}`,
-                field2: `${this.config.name_prefix}_${unique_id}`,
-                field3: `${this.config.prefix}:${unique_id}_${childSuffix}`
+                value : `${this.config.prefix}:${this.id}_${generated_id}_${childSuffix}`,
+                field1: `${this.id}_${generated_id}_${childSuffix}`,
+                field2: `${this.config.name_prefix}_${this.id}_${generated_id}`,
+                field3: `${this.config.prefix}:${this.id}_${generated_id}_${childSuffix}`
             },
-        };
-        return response
+        }
 
+    }
+
+
+    setId(id) {
+        this.id = id;
     }
 
     get(size) {
@@ -59,6 +63,13 @@ class Seed {
             results.push(this._get());
         }
         return results;
+    }
+
+    stats() {
+        const result = {
+            childcounter: childcounter
+        };
+        return `${JSON.stringify(result)}`;
     }
 }
 

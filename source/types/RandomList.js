@@ -24,6 +24,10 @@ class TransactionMix {
         }
     }
 
+    setId(id) {
+        this.id = id;
+    }
+
     get(size) {
         const chuckSize = size ? size : 1;
         const results   = [];
@@ -31,6 +35,14 @@ class TransactionMix {
             results.push(this._get());
         }
         return results;
+    }
+
+    stats() {
+        const result = {
+            usedList  : usedList.length,
+            unusedList: unusedList.length
+        };
+        return `${JSON.stringify(result)}`;
     }
 }
 

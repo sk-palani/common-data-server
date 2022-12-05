@@ -12,16 +12,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@grpc/grpc-js": "^1.3.6",
-    "@grpc/proto-loader": "^0.6.4",
-    "chalk": "^4.1.1",
+    "@grpc/grpc-js": "^1.7.1",
+    "@grpc/proto-loader": "^0.7.2",
+    "chalk": "^4.1.2",
     "csv-parser": "^3.0.0",
     "fifo": "^2.4.1",
     "fs": "^0.0.1-security",
     "node-cache": "^5.1.2",
     "path": "^0.12.7",
-    "short-id": "^0.0.0",
-    "short-unique-id": "^4.3.3",
+    "short-id": "^0.1.0-1",
+    "short-unique-id": "^4.4.4",
     "uuid": "^8.3.2"
   }
 }

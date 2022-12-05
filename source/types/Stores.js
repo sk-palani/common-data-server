@@ -62,6 +62,11 @@ class Stores {
         }
     }
 
+
+    setId(id) {
+        this.id = id;
+    }
+
     get(size) {
         const chuckSize = size ? size : 1;
         const results   = [];
@@ -78,7 +83,7 @@ class Stores {
         if (Array.isArray(chucks)) {
             for (let i = 0; i < chucks.length; i++) {
                 this.itemcounter++;
-                const itemID = shortid.generate();
+                const itemID = (chucks[i].hasOwnProperty('itemID')) ? chucks[i]['itemID'] : shortid.generate();
                 this.items.push(itemID);
                 this.storage.set(itemID, chucks[i]);
                 results.push({
@@ -89,6 +94,58 @@ class Stores {
             }
         }
         return results;
+    }
+
+    check(chucks) {
+        const results = [];
+        if (Array.isArray(chucks)) {
+            for (const singleChunk of chucks) {
+                const itemID = (singleChunk.hasOwnProperty('itemID')) ? singleChunk['itemID'] : 'Unknown';
+                const value  = (singleChunk.hasOwnProperty('value')) ? singleChunk['value'] : '';
+                const found  = !!this.storage.has(itemID);
+                delete singleChunk.itemID;
+                results.push({
+                    itemID: itemID,
+                    found : found,
+                    data  : singleChunk
+                });
+            }
+        }
+        return results;
+    }
+
+    popId(chucks) {
+        const results = [];
+        if (Array.isArray(chucks)) {
+            for (const singleChunk of chucks) {
+                const itemID = (singleChunk.hasOwnProperty('itemID')) ? singleChunk['itemID'] : 'Unknown';
+                const value  = (singleChunk.hasOwnProperty('value')) ? singleChunk['value'] : '';
+                const found  = !!this.storage.has(itemID);
+                delete singleChunk.itemID;
+                results.push({
+                    itemID: itemID,
+                    found : found,
+                    data  : this.storage.take(itemID)
+                });
+            }
+        }
+        return results;
+    }
+
+    reset() {
+        let stats        = this.storage.getStats();
+        const result     = String(stats.hasOwnProperty('keys') ? stats.keys : 0);
+        this.itemcounter = 0;
+        this.storage.flushAll();
+        this.lockedstorage.flushAll();
+        this.items.clear();
+        return `Cleared ${result} Items`;
+    }
+
+    stats() {
+        let stats    = this.storage.getStats();
+        const result = String(stats.hasOwnProperty('keys') ? stats.keys : 0);
+        return `${result} Items`;
     }
 }
 
