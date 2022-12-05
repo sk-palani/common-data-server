@@ -14,7 +14,28 @@ var port = process.env.PORT || 5000;
 const server = new grpc.Server();
 server.bindAsync(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure(),error => {
     server.addService(elementPackage.DataService.service, {
-        getData: (_, callback) => {
+        setGlobalId: (_, callback) => {
+            const globalID = _.request.hasOwnProperty("globalID") ? _.request.globalID : "default";
+            const response = [];
+
+            for (const [storeName, source] of Object.entries(dataStores)) {
+                if ("function" === typeof source.setId) {
+                    source.setId(globalID);
+                    response.push(`${storeName}`);
+                }
+            }
+            callback(null, {message: `ID : ${globalID} Set In [${response.join(";")}]`});
+        },
+        addData    : (_, callback) => {
+            const DataSource = _.request.hasOwnProperty("source") ? _.request.source : "default";
+            const chunks     = _.request.hasOwnProperty("chunks") ? _.request.chunks : ["data"];
+            if (dataStores.hasOwnProperty(DataSource) && Array.isArray(chunks) && "function" === typeof dataStores[DataSource].put) {
+                callback(null, {chunks: dataStores[DataSource].put(chunks)});
+            } else {
+                callback(null, {chunks: []});
+            }
+        },
+        getData    : (_, callback) => {
             const DataSource = _.request.hasOwnProperty("source") ? _.request.source : "default";
             const size       = _.request.hasOwnProperty("size") ? _.request.size : 1;
             if (dataStores.hasOwnProperty(DataSource)) {
@@ -23,13 +44,38 @@ server.bindAsync(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure(),erro
                 callback(null, {chunks: []});
             }
         },
-        addData: (_, callback) => {
+        checkId    : (_, callback) => {
             const DataSource = _.request.hasOwnProperty("source") ? _.request.source : "default";
             const chunks     = _.request.hasOwnProperty("chunks") ? _.request.chunks : ["data"];
             if (dataStores.hasOwnProperty(DataSource) && Array.isArray(chunks)) {
-                callback(null, {chunks: dataStores[DataSource].put(chunks)});
+                callback(null, {chunks: dataStores[DataSource].check(chunks)});
             } else {
                 callback(null, {chunks: []});
+            }
+        },
+        popId      : (_, callback) => {
+            const DataSource = _.request.hasOwnProperty("source") ? _.request.source : "default";
+            const chunks     = _.request.hasOwnProperty("chunks") ? _.request.chunks : ["data"];
+            if (dataStores.hasOwnProperty(DataSource) && Array.isArray(chunks)) {
+                callback(null, {chunks: dataStores[DataSource].popId(chunks)});
+            } else {
+                callback(null, {chunks: []});
+            }
+        },
+        reset      : (_, callback) => {
+            const DataSource = _.request.hasOwnProperty("source") ? _.request.source : "default";
+            if (dataStores.hasOwnProperty(DataSource)) {
+                callback(null, {message: dataStores[DataSource].reset()});
+            } else {
+                callback(null, {message: `Unknown Source : ${DataSource}`});
+            }
+        },
+        stats      : (_, callback) => {
+            const DataSource = _.request.hasOwnProperty("source") ? _.request.source : "default";
+            if (dataStores.hasOwnProperty(DataSource)) {
+                callback(null, {message: dataStores[DataSource].stats()});
+            } else {
+                callback(null, {message: `Unknown Source : ${DataSource}`});
             }
         }
     });

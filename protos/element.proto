@@ -4,11 +4,21 @@ import "google/protobuf/any.proto";
 package element;
 
 service DataService {
+  rpc setGlobalId(ConfigItem) returns (SimpleResult) {}
   rpc getData (DataItem) returns (DataChuckList) {}
   rpc addData (StorageItem) returns (DataChuckList) {}
+  rpc checkId (SearchItem) returns (ResultChuckList) {}
+  rpc popId (SearchItem)  returns (ResultChuckList) {}
+  rpc reset(SourceItem) returns (SimpleResult) {}
+  rpc stats(SourceItem) returns (SimpleResult) {}
 }
 
 message Empty {}
+
+message ConfigItem {
+  optional string globalID = 1;
+
+}
 
 message DataChuck {
   string id = 1;
@@ -17,14 +27,19 @@ message DataChuck {
 }
 
 message Item {
-  optional string value = 1;
-  optional string field1 = 2;
-  optional string field2 = 3;
-  optional string field3 = 4;
+  optional string itemID = 1;
+  optional string value = 2;
+  optional string field1 = 3;
+  optional string field2 = 4;
+  optional string field3 = 5;
 }
 
 message DataChuckList {
   repeated DataChuck chunks = 1;
+}
+
+message SourceItem {
+  string source = 1;
 }
 
 
@@ -36,4 +51,23 @@ message DataItem {
 message StorageItem {
   string source = 1;
   repeated Item chunks = 2;
+}
+
+message SearchItem {
+  string source = 1;
+  repeated Item chunks = 2;
+}
+
+
+message ResultChuckList {
+  repeated SearchResult chunks = 1;
+}
+message SearchResult {
+  optional string itemID = 1;
+  bool found = 2;
+  optional Item data = 3;
+}
+
+message SimpleResult {
+  string message = 1;
 }
